@@ -1,8 +1,8 @@
 <template>
     <div>
-        <section class="columns">
-            <base-field col="1/2" v-model="username" label="Username" required/>
-            <base-field col="1/2" v-model="email" label="Email"/>
+        <section class="columns is-multiline">
+            <base-field size="1/2" v-model="username" label="Username" required/>
+            <base-field size="1" v-model="email" label="Email"/>
         </section>
         {{email}}
         <section>

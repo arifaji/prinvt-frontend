@@ -6,7 +6,7 @@
                 <slot v-bind="slotData">
                     <input 
                         class="input is-medium with-floating-label"
-                        id="email" 
+                        :id=id 
                         placeholder=" "
                         type="text"
                         :value="value"
@@ -14,7 +14,7 @@
                         v-bind="$attrs"
                     />
                 </slot>
-                <label class="label is-floating-label" for="email">
+                <label class="label is-floating-label" :for="label">
                     {{label}}
                     <span v-if="required" class="has-text-danger">*</span>
                 </label>
@@ -27,6 +27,11 @@
 export default {
   name: "base-field",
   props: {
+    id: {
+      required: true,
+      type: String,
+      description: "Tag input ID"
+    },
     required: {
       type: Boolean,
       description: "Whether input is required (adds an asterix *)"
@@ -68,7 +73,7 @@ export default {
       type: String,
       description: "Addont left icon"
     },
-    col: {
+    size: {
       type: String,
       description: "Input value"
     }
@@ -130,7 +135,7 @@ export default {
         }
       ]
 
-      const size = sizeChart.find(o => o.size === this.col)
+      const size = sizeChart.find(o => o.size === this.size)
       if (size) return 'column ' + size.class
       return 'column ' + sizeChart[0].class
     }
