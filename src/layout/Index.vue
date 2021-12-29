@@ -1,9 +1,12 @@
 <template>
     <div>
         <section class="columns is-multiline">
-            <base-field size="1/2" v-model="username" label="Username" required/>
-            <base-field size="1" v-model="email" label="Email"/>
+            <base-field id="username" size="1/2" v-model="username" label="Username" required/>
+            <base-field id="username 2" size="1/2" v-model="username" label="Username" clearable/>
+            <base-field id="username 3" size="1/2" v-model="username" label="Username" required :isClearable="true"/>
+            <base-field id="email" size="1" v-model="email" label="Email"/>
         </section>
+        {{username}}
         {{email}}
         <section>
             <b-field label="Name">
@@ -21,6 +24,7 @@
 
             <b-field label="Username"
                 type="is-success"
+                label-position="inside"
                 message="This username is available">
                 <b-input value="johnsilver" maxlength="30"></b-input>
             </b-field>

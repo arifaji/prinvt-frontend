@@ -1,26 +1,24 @@
 <template>
     <div :class="column">
-        <form class="form">
-            <div class="field">
-            <div class="control has-floating-label">
-                <slot v-bind="slotData">
-                    <input 
-                        class="input is-medium with-floating-label"
-                        :id=id 
-                        placeholder=" "
-                        type="text"
-                        :value="value"
-                        v-on="listeners"
-                        v-bind="$attrs"
-                    />
-                </slot>
-                <label class="label is-floating-label" :for="label">
-                    {{label}}
-                    <span v-if="required" class="has-text-danger">*</span>
-                </label>
-            </div>
-            </div>
-        </form>
+        <b-field :label="label" label-position="inside" 
+          type="is-success"
+          message="This username is available">
+          <slot v-bind="slotData">
+            <b-input 
+              :id=id 
+              placeholder=" "
+              type="text"
+              v-model="d_value"
+              v-on="listeners"
+              v-bind="$attrs"
+              :icon-right="isClearable.icon"
+              :icon-right-clickable="isClearable.clickable"
+              @icon-right-click="clearIconClick"
+              @mouseover.native="onMouseover"
+              @mouseout.native="onMouseleave"
+            />
+          </slot>
+        </b-field>
     </div>
 </template>
 <script>
@@ -76,10 +74,16 @@ export default {
     size: {
       type: String,
       description: "Input value"
+    },
+    clearable: {
+      type: Boolean,
+      description: "Whether input is can clearable with button"
     }
   },
   data() {
     return {
+      d_value: this.value,
+      d_hover: false,
       focused: false
     };
   },
@@ -87,9 +91,10 @@ export default {
     listeners() {
       return {
         ...this.$listeners,
-        input: this.updateValue,
+        input: this.input,
         focus: this.onFocus,
-        blur: this.onBlur
+        blur: this.onBlur,
+        mouseover: this.onMouseover
       };
     },
     slotData() {
@@ -138,11 +143,32 @@ export default {
       const size = sizeChart.find(o => o.size === this.size)
       if (size) return 'column ' + size.class
       return 'column ' + sizeChart[0].class
+    },
+    isClearable () {
+      if (this.clearable && this.d_hover) {
+        return {
+          icon: 'close-circle',
+          clickable: true
+        }
+      }
+      return {
+        icon: '',
+        clickable: false
+      }
     }
   },
   methods: {
-    updateValue(evt) {
-      let value = evt.target.value;
+    onMouseover () {
+      this.d_hover = true
+    },
+    onMouseleave () {
+      this.d_hover = false
+    },
+    clearIconClick () {
+      this.d_value = null;
+      this.$emit("input", this.d_value);
+    },
+    input(value) {
       this.$emit("input", value);
     },
     onFocus(value) {
@@ -153,6 +179,11 @@ export default {
       this.focused = false;
       this.$emit("blur", value);
     }
-  }
+  },
+  watch: {
+    value (n) {
+      this.d_value = n
+    }
+  },
 };
 </script>
