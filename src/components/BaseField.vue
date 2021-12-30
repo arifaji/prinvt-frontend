@@ -1,8 +1,14 @@
 <template>
     <div :class="column">
-        <b-field :label="label" label-position="inside" 
-          type="is-success"
-          message="This username is available">
+        <b-field label-position="inside" 
+          :type="d_type"
+          :message="message">
+          <template #label>
+            <div>
+              {{label}}
+              <em class="has-text-danger" v-if="required">*</em>
+            </div>
+          </template>
           <slot v-bind="slotData">
             <b-input 
               :id=id 
@@ -16,6 +22,7 @@
               @icon-right-click="clearIconClick"
               @mouseover.native="onMouseover"
               @mouseout.native="onMouseleave"
+              :required="required"
             />
           </slot>
         </b-field>
@@ -39,25 +46,9 @@ export default {
       description: "Whether is valid",
       default: undefined
     },
-    alternative: {
-      type: Boolean,
-      description: "Whether input is of alternative layout"
-    },
     label: {
       type: String,
       description: "Input label (text before input)"
-    },
-    error: {
-      type: String,
-      description: "Input error (below input)"
-    },
-    labelClasses: {
-      type: String,
-      description: "Input label css classes"
-    },
-    inputClasses: {
-      type: String,
-      description: "Input css classes"
     },
     value: {
       type: [String, Number],
@@ -78,12 +69,18 @@ export default {
     clearable: {
       type: Boolean,
       description: "Whether input is can clearable with button"
+    },
+    externalValidation: {
+      type: Function,
+      default: null 
     }
   },
   data() {
     return {
       d_value: this.value,
       d_hover: false,
+      d_type: '',
+      message: [],
       focused: false
     };
   },
@@ -158,6 +155,32 @@ export default {
     }
   },
   methods: {
+    clearMessage () {
+      this.message = []
+      this.d_type = ''
+    },
+    validate () {
+      this.clearMessage()
+
+      if (!this.d_value && this.required) {
+        this.message.push(this.label + ' is required')
+      } else if (this.d_value && this.d_value.length > this.maxlength) {
+        this.message.push(this.label + ' input exceeded')
+      }
+
+      if (this.externalValidation != null) {
+        const message = this.externalValidation(this.d_value)
+        if (message) { this.message.push(message) }
+      }
+
+      if (this.message.length === 0) {
+        this.d_type = "is-success"
+        return true
+      } else {
+        this.d_type = 'is-danger'
+        return false
+      }
+    },
     onMouseover () {
       this.d_hover = true
     },
@@ -170,6 +193,7 @@ export default {
     },
     input(value) {
       this.$emit("input", value);
+      this.validate()
     },
     onFocus(value) {
       this.focused = true;
