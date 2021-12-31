@@ -6,7 +6,7 @@
           <template #label>
             <div>
               {{label}}
-              <em class="has-text-danger" v-if="required">*</em>
+              <!-- <em class="has-text-danger" v-if="required">*</em> -->
             </div>
           </template>
           <slot v-bind="slotData">
@@ -23,6 +23,8 @@
               @mouseover.native="onMouseover"
               @mouseout.native="onMouseleave"
               :required="required"
+              :minlength="minlength"
+              :maxlength="maxlength"
             />
           </slot>
         </b-field>
@@ -36,6 +38,14 @@ export default {
       required: true,
       type: String,
       description: "Tag input ID"
+    },
+    minlength: {
+      type: Number,
+      description: "Minimal input"
+    },
+    maxlength: {
+      type: Number,
+      description: "Input value"
     },
     required: {
       type: Boolean,
@@ -138,8 +148,8 @@ export default {
       ]
 
       const size = sizeChart.find(o => o.size === this.size)
-      if (size) return 'column ' + size.class
-      return 'column ' + sizeChart[0].class
+      if (size) return `column ${size.class}`
+      return null
     },
     isClearable () {
       if (this.clearable && this.d_hover) {
@@ -166,6 +176,8 @@ export default {
         this.message.push(this.label + ' is required')
       } else if (this.d_value && this.d_value.length > this.maxlength) {
         this.message.push(this.label + ' input exceeded')
+      } else if (this.minlength && this.d_value && this.d_value.length < this.minlength) {
+        this.message.push(`Please lengthen this input to ${this.minlength} characters or more`)
       }
 
       if (this.externalValidation != null) {
