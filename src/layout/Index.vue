@@ -1,5 +1,7 @@
 <template>
   <section class="hero has-background-light is-fullheight">
+    <modal-register ref="modalRegister" />
+    <modal-verified ref="modalVerified"/>
     <div class="container">
       <div class="columns is-multiline">
         <div class="column is-8 is-offset-2 register">
@@ -12,32 +14,44 @@
             <div class="column right has-text-centered">
               <!-- <h1 class="title is-4">Sign up today</h1>
               <p class="description has-text-grey">Lorem ipsum dolor, sit amet consectetur adipisicing elit</p> -->
-              <form @submit.prevent="submit">
-                <modal-card ref="modalRegister" :canCancel="false">
-                  
-                </modal-card>
-                <div class="field">
+              <form class="has-text-left">
+                <!-- <div class="field">
                   <div class="control">
-                    <input class="input is-medium" type="email" placeholder="Email" required>
+                    <input v-model="email" class="input is-medium" type="email" placeholder="Email" required>
                   </div>
-                </div>
+                </div> -->
+                <base-field
+                  id="email"
+                  v-model="email"
+                  label=""
+                  placeholder="Email"
+                  validation="email"
+                  required
+                  :label-position="null"
+                />
+qpwejkasjd
+                <base-field
+                  id="password"
+                  v-model="password"
+                  label=""
+                  placeholder="Password"
+                  type="password"
+                  required
+                  :label-position="null"
+                />
+              </form>
 
-                <div class="field">
-                  <div class="control">
-                    <input class="input is-medium" type="password" placeholder="Password" required>
-                  </div>
-                </div>
+                <b-button @click="submit" class="mt-3 is-block is-success is-fullwidth is-medium mb-1">Login</b-button>
 
-                <button type="submit" class="button is-block is-success is-fullwidth is-medium mb-1">Login</button>
                 <router-link :to="{ name: 'forgot-password' }">
-                  <small><em class="has-text-success">Forgot Password ?</em></small>
+                  <small class="has-text-centered"><em class="has-text-success">Forgot Password ?</em></small>
                 </router-link>
 
                 <hr style="margin:0.5em;" class="has-background-primary-light"/>
                 <!-- <router-link :to="{ name: 'register' }"> -->
                   <b-button @click="openModalRegister" class="is-block is-info is-fullwidth is-medium mb-1">Create Account</b-button>
                 <!-- </router-link> -->
-              </form>
+              
             </div>
           </div>
         </div>
@@ -75,14 +89,18 @@
   </section>
 </template>
 <script>
-import ModalCard from '../components/ModalCard.vue';
 import validator from '../util/validator'
+import axios from 'axios'
+import _ from 'lodash'
 export default {
-  components: { ModalCard },
+  components: {
+    'modal-register': () => import('./modals/ModalRegister.vue'),
+    'modal-verified': () => import('./modals/ModalVerified.vue')
+  },
   data() {
     return {
       email: null,
-      username: null,
+      password: null
     };
   },
   computed: {
@@ -91,8 +109,25 @@ export default {
     }
   },
   methods: {
-    submit() {
-      alert('submit');
+    async submit() {
+      try {
+        const { data } = await axios.post('/api/login', { email: this.email, password: this.password })
+        localStorage.setItem('token', data)
+        this.$router.push({ name: 'home' })
+        // const me = 
+      } catch (error) {
+        if (_.get(error, 'data.email')) {
+          this.$refs.modalVerified.setData({ email: _.get(error, 'data.email') })
+          return this.$refs.modalVerified.open()
+        }
+        this.$buefy.notification.open({
+          message: _.get(error, 'data.message'),
+          duration: 5000,
+          progressBar: true,
+          type: 'is-danger',
+          pauseOnHover: true
+        })
+      }
     },
     openModalRegister() {
       this.$refs.modalRegister.open()
@@ -100,6 +135,12 @@ export default {
     clickMe() {
       const valid = this.validator.validate(this.$refs)
       console.log(valid)
+    }
+  },
+  mounted () {
+    console.log(localStorage.getItem('token'))
+    if (localStorage.getItem('token')) {
+      this.$router.push({ name: 'home' })
     }
   }
 };

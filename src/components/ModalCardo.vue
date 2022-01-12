@@ -1,9 +1,20 @@
 <template>
-  <section>
-    <b-modal v-model="show" :width="400" :can-cancel="canCancel" scroll="keep">
-      <slot></slot>
-    </b-modal>
-  </section>
+  <div id="modal-fx-slideRight" :class="`modal modal-fx-slideRight ${show ? 'is-active': ''}`">
+    <div class="modal-background" v-on:click="outsideClose"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Modal title</p>
+        <button class="delete" aria-label="close" type="button" @click="close"></button>
+      </header>
+      <section class="modal-card-body">
+        <slot name="content"></slot>
+      </section>
+      <footer class="modal-card-foot" v-show="slotFooter">
+      <!-- <footer class="modal-card-foot" style="justify-content: center;" v-show="slotFooter"> -->
+        <slot name="footer"></slot>
+      </footer>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -58,8 +69,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-  .modal-content {
-    max-height: none !important;
-  }
-</style>

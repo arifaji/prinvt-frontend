@@ -8,6 +8,12 @@ module.exports = {
   },
   devServer: {
     host: 'localhost',
+    proxy: {
+      "/api": {
+        "target": process.env.VUE_APP_API,
+        "changeOrigin": true
+      }
+    },
     disableHostCheck: true,
     clientLogLevel: 'warning',
     hot: true,

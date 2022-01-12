@@ -4,6 +4,9 @@ import Index from './layout/Index.vue'
 import Login from './layout/Login.vue'
 import Register from './layout/Register.vue'
 import ForgotPassword from './layout/Forgot-Password.vue'
+import NotFound from './layout/404.vue'
+import Home from './layout/Home.vue'
+import { token, noToken } from './util/routeGuard'
 
 Vue.use(Router);
 
@@ -14,6 +17,7 @@ export default new Router({
     {
       path: "/",
       name: "index",
+      beforeEnter: noToken,
       components: {
         // header: AppHeader,
        default: Index
@@ -46,6 +50,21 @@ export default new Router({
        default: ForgotPassword
         // footer: AppFooter
       }
+    },
+    {
+      path: "/home",
+      name: "home",
+      beforeEnter: token,
+      components: {
+        // header: AppHeader,
+       default: Home
+        // footer: AppFooter
+      }
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: NotFound
     }
   ]
 })

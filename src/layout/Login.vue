@@ -44,6 +44,7 @@
 </template>
 <script>
 import validator from '../util/validator'
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -57,12 +58,19 @@ export default {
     }
   },
   methods: {
-    formAction() {
-      alert('ok');
-    },
-    clickMe() {
-      const valid = this.validator.validate(this.$refs)
-      console.log(valid)
+    async formAction() {
+      try {
+        const user = await axios.post('/api/login', { email: this.email, password: this.password })
+        console.log(user)
+      } catch (error) {
+        this.$buefy.notification.open({
+          message: error.message,
+          duration: 5000,
+          progressBar: true,
+          type: 'is-danger',
+          pauseOnHover: true
+        })
+      }
     }
   }
 };
