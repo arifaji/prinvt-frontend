@@ -6,6 +6,7 @@ import Register from './layout/Register.vue'
 import ForgotPassword from './layout/Forgot-Password.vue'
 import NotFound from './layout/404.vue'
 import Home from './layout/Home.vue'
+import Events from './layout/Events.vue'
 import { token, noToken } from './util/routeGuard'
 
 Vue.use(Router);
@@ -58,6 +59,16 @@ export default new Router({
       components: {
         // header: AppHeader,
        default: Home
+        // footer: AppFooter
+      }
+    },
+    {
+      path: "/events",
+      name: "events",
+      beforeEnter: token,
+      components: {
+        // header: AppHeader,
+       default: Events
         // footer: AppFooter
       }
     },

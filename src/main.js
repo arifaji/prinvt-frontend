@@ -5,13 +5,13 @@ import 'buefy/dist/buefy.css'
 import CompKit from "./plugins/component-kit";
 import router from "./router"
 import { store } from "./store/index"
-import axiosConfig from "./util/axios.config"
+// import axiosConfig from "./util/axios.config"
 
 Vue.use(Buefy)
 Vue.use(CompKit)
 Vue.config.productionTip = false
 
-axiosConfig()
+// axiosConfig()
 
 new Vue({
   router,

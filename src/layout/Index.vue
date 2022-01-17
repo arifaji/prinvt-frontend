@@ -23,16 +23,17 @@
                 <base-field
                   id="email"
                   v-model="email"
+                  ref="email"
                   label=""
                   placeholder="Email"
                   validation="email"
                   required
                   :label-position="null"
                 />
-qpwejkasjd
                 <base-field
                   id="password"
                   v-model="password"
+                  ref="password"
                   label=""
                   placeholder="Password"
                   type="password"
@@ -89,8 +90,6 @@ qpwejkasjd
   </section>
 </template>
 <script>
-import validator from '../util/validator'
-import axios from 'axios'
 import _ from 'lodash'
 export default {
   components: {
@@ -104,24 +103,25 @@ export default {
     };
   },
   computed: {
-    validator() {
-      return validator
-    }
   },
   methods: {
     async submit() {
+      const valid = await this.$validator.validate([
+        this.$refs.email,
+        this.$refs.password
+      ])
+      if (!valid) return;
       try {
-        const { data } = await axios.post('/api/login', { email: this.email, password: this.password })
+        const data = await this.$helpers.httpPost('/api/login', { email: this.email, password: this.password })
         localStorage.setItem('token', data)
         this.$router.push({ name: 'home' })
-        // const me = 
       } catch (error) {
-        if (_.get(error, 'data.email')) {
-          this.$refs.modalVerified.setData({ email: _.get(error, 'data.email') })
+        if (_.get(error, 'email')) {
+          this.$refs.modalVerified.setData({ email: _.get(error, 'email') })
           return this.$refs.modalVerified.open()
         }
         this.$buefy.notification.open({
-          message: _.get(error, 'data.message'),
+          message: _.get(error, 'message'),
           duration: 5000,
           progressBar: true,
           type: 'is-danger',
@@ -131,14 +131,9 @@ export default {
     },
     openModalRegister() {
       this.$refs.modalRegister.open()
-    },
-    clickMe() {
-      const valid = this.validator.validate(this.$refs)
-      console.log(valid)
     }
   },
   mounted () {
-    console.log(localStorage.getItem('token'))
     if (localStorage.getItem('token')) {
       this.$router.push({ name: 'home' })
     }

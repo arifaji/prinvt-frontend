@@ -27,6 +27,11 @@ const inputMixin = {
       type: Boolean,
       description: "Whether input is required (adds an asterix *)"
     },
+    noValidate: {
+      type: Boolean,
+      default: false,
+      description: "Just Normal Input, no need validation"
+    },
     valid: {
       type: Boolean,
       description: "Whether is valid",
@@ -162,6 +167,10 @@ const inputMixin = {
       this.d_type = ''
     },
     validate() {
+      if (this.noValidate) {
+        return
+      }
+
       this.clearMessage()
 
       if (!this.d_value && this.required) {

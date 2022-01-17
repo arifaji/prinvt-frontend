@@ -69,7 +69,6 @@
 <script>
 import BaseField from '../../components/BaseField.vue';
 import { validate } from '../../util/validator';
-import axios from 'axios';
 export default {
   components: { BaseField },
   data() {
@@ -103,7 +102,7 @@ export default {
       const form = this.$store.getters.getItem('form')
       console.log(process.env.VUE_APP_API)
       const api = '/api/nope'
-      const result = await axios.post(api, form)
+      const result = await this.$helpers.httpPost(api, form)
       console.log(result);
     }
   }
