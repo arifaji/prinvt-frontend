@@ -2,7 +2,6 @@
   <div :class="column">
     <div class="file is-normal is-boxed has-name">
       <label class="file-label" @click="imageModalActive" style="width: -webkit-fill-available;">
-        <!-- <input class="file-input" type="file" name="resume"> -->
         <span class="file-cta">
           <span class="file-icon">
             <i class="mdi mdi-camera"></i>
