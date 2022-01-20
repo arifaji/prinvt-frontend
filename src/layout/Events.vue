@@ -2,7 +2,6 @@
   <div>
     <navbar/>
     <div class="container">
-
       <div class="section">
         <section class="hero card is-white welcome is-small mb-2">
           <div class="hero-body">
@@ -45,7 +44,7 @@
                 v-model="form.eventName"
                 ref="eventName"
                 label="Event Name"
-                :no-validate="true"
+                required
               />
               <base-field
                 class="column is-4"
@@ -54,12 +53,13 @@
                 ref="eventDetail"
                 label="Event Detail"
                 placeholder=""
-                :no-validate="true"
+                required
               />
               <div class="column is-4">
                 <b-field label="Start Date" label-position="inside">
                   <b-datetimepicker
                     v-model="form.startDate"
+                    ref="startDate"
                     icon="calendar-today"
                     locale="id-ID"
                     :timepicker="{ hourFormat: '24' }"
@@ -73,6 +73,7 @@
                   <b-datetimepicker
                     :disabled="form.startDate ? false : true"
                     v-model="form.endDate"
+                    ref="endDate"
                     icon="calendar-today"
                     locale="id-ID"
                     :timepicker="{ hourFormat: '24' }"
@@ -88,7 +89,7 @@
                 ref="province"
                 label="Province"
                 placeholder=""
-                :no-validate="true"
+                required
               />
               <base-field
                 class="column is-4"
@@ -97,7 +98,7 @@
                 ref="city"
                 label="City"
                 placeholder=""
-                :no-validate="true"
+                required
               />
               <base-field
                 class="column is-4"
@@ -106,10 +107,20 @@
                 ref="detailLocation"
                 label="Detail Location"
                 placeholder=""
-                :no-validate="true"
+                required
               />
-              
-              
+
+              <div class="column is-4">
+                <b-switch
+                  v-model="form.isMultiScan"
+                  :rounded="false"
+                  size="is-large"
+                  type="is-success"
+                >
+                  Allow MultiScan
+                </b-switch>              
+              </div>
+
               <div class="column is-12">
                 <b-button @click.native="addEvent" class="is-fullwidth" style="margin-top: 2px;" size="is-medium" icon-left="playlist-plus">
                   Add Event
@@ -136,10 +147,16 @@
                   </div>
                   <div class="media-content">
                     <p class="title is-4 no-padding">{{card.eventName}}</p>
+                    <!-- <p>
+                      <span class="title is-6">
+                        {{titleDate(card.startDate)}} - {{titleDate(card.endDate)}}
+                      </span>
+                    </p> -->
                     <p class="subtitle is-6">{{card.province}} - {{card.city}}</p>
                   </div>
                 </div>
                 <div class="content">
+                  <p class="has-text-weight-bold">{{titleDate(card.startDate)}} - {{titleDate(card.endDate)}}</p>
                   {{card.eventDetail}}
                   <div class="background-icon"><span class="icon-twitter"></span></div>
                 </div>
@@ -154,6 +171,7 @@
 <script>
 import { cardsData } from './cardData'
 import _ from 'lodash'
+import moment from 'moment'
 export default {
   mounted() {
     this.getEvents()
@@ -180,14 +198,34 @@ export default {
         province: null,
         city: null,
         detailLocation: null,
-        isMultiScan: null
+        isMultiScan: false
       }
     }
   },
   methods: {
-    addEvent() {
-      console.log(JSON.stringify(this.form))
-      this.getEvents()
+    async addEvent() {
+      try {
+        const valid = await this.$validator.validate([
+          this.$refs.eventName,
+          this.$refs.eventDetail,
+          // this.$refs.startDate,
+          // this.$refs.endDate,
+          this.$refs.province,
+          this.$refs.city,
+          this.$refs.detailLocation
+        ])
+        if (!valid) return;
+        await this.$helpers.httpPost('/api/event', this.form)
+        this.getEvents()
+      } catch (error) {
+        this.$buefy.notification.open({
+          message: _.get(error, 'message'),
+          duration: 5000,
+          progressBar: true,
+          type: 'is-danger',
+          pauseOnHover: true
+        })
+      }
     },
     async getEvents() {
       try {
@@ -196,6 +234,9 @@ export default {
       } catch (error) {
         this.events = []
       }
+    },
+    titleDate(payload) {
+      return moment(payload).format('DD/MMM/YY hh:mm')
     }
     
   }
