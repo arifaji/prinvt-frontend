@@ -6,6 +6,11 @@ const inputMixin = {
       type: String,
       description: "Tag input ID"
     },
+    readonly: {
+      type: Boolean,
+      default: false,
+      description: "readonly tag"
+    },
     placeholder: {
       type: String,
       description: "Placeholder"
@@ -214,6 +219,9 @@ const inputMixin = {
       this.validate();
     },
     onFocus(value) {
+      if (this.readonly) {
+        return
+      }
       this.focused = true;
       this.validate();
       this.$emit("focus", value);

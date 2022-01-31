@@ -37,7 +37,7 @@
             </ul>
           </aside>
         </div> -->
-        <div class="column mt-2">
+        <div class="column mt-2 is-flex-direction-column">
           <section class="hero is-info welcome is-small">
             <div class="hero-body">
               <div class="container">

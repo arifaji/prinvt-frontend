@@ -2,13 +2,13 @@
   <div class="hero-head is-primary has-background-white box-shadow">
     <nav class="navbar ">
   <div class="navbar-brand">
-    <b-navbar-item>
-      <img src="@/assets/img/Logo.png" alt="Prinvt." />
-    </b-navbar-item>
+    <a class="navbar-item" href="http://bulma.io">
+      <img src="http://bulma.io/images/bulma-logo.png" alt="Bulma: a modern CSS framework based on Flexbox" width="112" height="28">
+    </a>
 
-    <a class="navbar-item is-hidden-desktop is-right">
-      <span class="icon has-text-primary">
-        <i class="mdi mdi-bell mdi-18px"></i>
+    <a class="navbar-item is-hidden-desktop is-right" href="https://twitter.com/jgthms" target="_blank">
+      <span class="icon" style="color: #55acee;">
+        <i class="mdi mdi-twitter"></i>
       </span>
     </a>
 
@@ -21,18 +21,18 @@
 
   <div id="navMenubd-example" :class="`navbar-menu ${navbarMenu ? 'is-active' : ''}`">
     <div class="navbar-start">
-      <b-navbar-item @click="router({ name: 'home' })">
-        Home
-      </b-navbar-item>
-      <b-navbar-item @click="router({ name: 'events' })">
-        Events
-      </b-navbar-item>
+      <b-navbar-item>
+          <router-link :to="{ name: 'home' }"> Home </router-link>
+        </b-navbar-item>
+        <b-navbar-item>
+          <router-link :to="{ name: 'events' }"> Events </router-link>
+        </b-navbar-item>
     </div>
 
     <div class="navbar-end">
-      <a v-show="!navbarMenu" class="navbar-item is-desktop-only">
-        <span class="icon has-text-primary">
-          <i class="mdi mdi-bell mdi-18px"></i>
+      <a class="navbar-item is-desktop-only" href="https://github.com/jgthms/bulma" target="_blank">
+        <span class="icon" style="color: #333;">
+          <i class="mdi mdi-github"></i>
         </span>
       </a>
       <b-navbar-dropdown>
@@ -69,6 +69,18 @@
           </span>
         </b-navbar-item>
       </b-navbar-dropdown>
+      <!-- <div class="navbar-item">
+        <div class="field is-grouped">
+          <p class="control">
+            <a class="button is-primary" href="https://github.com/jgthms/bulma/archive/0.5.1.zip">
+              <span class="icon">
+                <i class="mdi mdi-download"></i>
+              </span>
+              <span>Download</span>
+            </a>
+          </p>
+        </div>
+      </div> -->
     </div>
   </div>
 </nav>
@@ -96,9 +108,6 @@ export default {
     },
   },
   methods: {
-    router({ name }) {
-      this.$router.push({ name })
-    },
     burgerAction() {
       this.navbarMenu = !this.navbarMenu
     },

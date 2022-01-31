@@ -2,6 +2,7 @@
     <div :class="column">
         <b-field :label-position="labelPosition" 
           :type="d_type"
+          style="width: -webkit-fill-available;"
           :message="message">
           <template #label>
             <div>
@@ -27,6 +28,7 @@
               :minlength="minlength"
               :maxlength="maxlength"
               :password-reveal="passwordReveal"
+              :readonly="readonly"
             />
           </slot>
         </b-field>

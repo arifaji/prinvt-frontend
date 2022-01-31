@@ -10,8 +10,8 @@
             {{label}}Avatar
           </span>
         </span>
-        <span class="file-name" style="width: -webkit-fill-available; height: auto;">
-          <b-image responsive rounded :src="preview" />
+        <span class="file-name image" style="width: -webkit-fill-available; height: auto;">
+            <img :class="rounded? 'is-rounded' : ''" :src="d_value" style="display: block; margin-left: auto; margin-right: auto;"/>
         </span>
       </label>
     </div>
@@ -23,9 +23,9 @@
             class="upload-example__cropper"
             check-orientation
             :src="image.src"
-            stencil-component="circle-stencil"
+            :stencil-component="rounded ? 'circle-stencil' : 'rectangle-stencil'"
             :stencil-props="{
-              aspectRatio: 1/1
+              aspectRatio: ratio
             }"
           />
           <div
@@ -33,7 +33,7 @@
             title="Reset Image"
             @click="reset()"
           >
-            <p>C</p>
+            <p class="icon has-text-white"><i class="mdi mdi-reload"></i></p>
           </div>
           <div class="upload-example__file-type" v-if="image.type">
             {{ image.type }}
@@ -48,11 +48,11 @@
               accept="image/*"
               @change="loadImage($event)"
             />
-            Upload image
+            Upload Image
           </button>
           <!-- <button v-if="image.src" class="upload-example__button" @click="crop()">Download result</button> -->
-          <button class="upload-example__button" @click="crop()">
-            Download result
+          <button v-if="image.src" class="upload-example__button" @click="crop()">
+            Done
           </button>
         </div>
       </div>
@@ -64,6 +64,7 @@ import inputMixin from "./mixins/input";
 
 import { Cropper } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
+import Jimp from 'jimp'
 
 // This function is used to detect the actual image type,
 function getMimeType(file, fallback = null) {
@@ -94,32 +95,68 @@ export default {
   components: {
     cropper: Cropper,
   },
+  props: {
+    rounded: {
+      type: Boolean,
+      default: false
+    },
+    ratio: {
+      type: Number,
+      default: 9/6
+    },
+    maxWidth: {
+      type: Number,
+      default: 100
+    },
+    maxHeight: {
+      type: Number,
+      default: 100
+    }
+  },
   data() {
     return {
       image: {
         src: null,
         type: null,
       },
-      isImageModalActive: false,
-      preview: null,
+      isImageModalActive: false
     };
+  },
+  computed: {
   },
   methods: {
     imageModalActive() {
       this.isImageModalActive = !this.isImageModalActive;
     },
-    crop() {
+    async crop() {
       const { canvas } = this.$refs.cropper.getResult();
       // canvas.toBlob((blob) => {
       // 	console.log(blob)
       // }, this.image.type);
       // console.log(canvas)
-      this.preview = canvas.toDataURL();
-      console.log(canvas);
-      // const quality =  80
-      // const output_format = 'jpg'
-      // this.preview = jic.compress(canvas.toDataURL, quality, output_format).src
-      // console.log(this.preview)
+      Jimp.read(canvas.toDataURL())
+        .then((image) => {
+          const diffW = this.maxWidth/image.bitmap.width
+          const diffH = this.maxHeight/image.bitmap.height
+          const diff = diffW > diffH ? diffH : diffW
+          const fixWidth = parseInt(diff*image.bitmap.width)
+          const fixHeight = parseInt(diff*image.bitmap.height)
+
+          image.quality(80)
+          image.resize(fixWidth, fixHeight)
+          image.getBase64Async(image.getMIME())
+            .then((preview) => {
+              this.d_value = preview
+              this.$emit("input", preview);
+            })
+            .catch(err => {
+              console.log(err)
+            });
+        })
+        .catch(err => {
+          console.log(err)
+        });
+        this.imageModalActive()
     },
     reset() {
       this.image = {
@@ -163,6 +200,8 @@ export default {
       }
     },
   },
+  watch: {
+  },
   destroyed() {
     // Revoke the object URL, to allow the garbage collector to destroy the uploaded before file
     if (this.image.src) {
@@ -172,11 +211,24 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.img {
+  max-height: 100px;
+  width: 300px;
+}
+
+.image img {
+  display: block;
+  height: auto;
+  width: auto;
+}
 .file-icon {
   margin-right: inherit;
 }
 .file-name {
   max-width: inherit;
+}
+.file.is-normal {
+    width: -webkit-fill-available;
 }
 .upload-example {
   margin-top: 20px;

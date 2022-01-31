@@ -6,15 +6,14 @@
       <div class="columns is-multiline">
         <div class="column is-8 is-offset-2 register">
           <div class="columns">
-            <div class="column left">
+            <div class="column left is-flex-direction-column">
               <h1 class="title is-1">Prinvt</h1>
               <h2 class="subtitle has-text-success">One-Stop Event Planner.</h2>
               <p class="has-text-grey">
                 Prinvt app helps organized event with easy private invitation.
               </p>
             </div>
-            <div class="column right has-text-centered">
-              <single-image id="singe-image"/>
+            <div class="column right has-text-centered is-flex-direction-column">
               <!-- <h1 class="title is-4">Sign up today</h1>
               <p class="description has-text-grey">Lorem ipsum dolor, sit amet consectetur adipisicing elit</p> -->
               <form class="has-text-left">

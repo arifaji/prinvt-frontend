@@ -1,7 +1,9 @@
 <template>
     <div id="app" class="">
       <b-loading v-model="isLoading"></b-loading>
-      <router-view/>
+      <section class="hero is-fullheight is-light">
+        <router-view/>
+      </section>
     </div>
 </template>
 <script>

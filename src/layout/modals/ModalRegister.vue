@@ -21,6 +21,16 @@
           />
 
           <base-field
+            ref="username"
+            v-model="form.username"
+            label="Username"
+            id="register-username"
+            :minlength="3"
+            validation="username"
+            required
+          />
+
+          <base-field
             ref="email"
             v-model="form.email"
             label="Email"
@@ -55,11 +65,6 @@
             type="is-success"
             @click="signUp"
           />
-          <b-button
-            label="Cek"
-            type="is-success"
-            @click="cek"
-          />
         </footer>
       </div>
     </form>
@@ -69,12 +74,14 @@
 <script>
 import BaseField from '../../components/BaseField.vue';
 import { validate } from '../../util/validator';
+import _ from 'lodash';
 export default {
   components: { BaseField },
   data() {
     return {
       form: {
         fullname: null,
+        username: null,
         email: null,
         password: null,
         confirmPassword: null
@@ -93,17 +100,26 @@ export default {
         return 'Password not match'
       }
     },
-    signUp() {
+    async signUp() {
       const valid = validate(this.$refs);
-      this.$store.commit('setItem', { key: 'form', object: this.form });
-      if (!valid) alert('OH NOOOO')
-    },
-    async cek() {
-      const form = this.$store.getters.getItem('form')
-      console.log(process.env.VUE_APP_API)
-      const api = '/api/nope'
-      const result = await this.$helpers.httpPost(api, form)
-      console.log(result);
+      if (!valid) return;
+      try {
+        await this.$helpers.httpPost('/api/register', {
+          fullname: this.form.fullname,
+          username: this.form.username,
+          email: this.form.email,
+          password: this.form.password
+        });
+        this.close();
+      } catch (error) {
+        this.$buefy.notification.open({
+          message: _.get(error, "message"),
+          duration: 5000,
+          progressBar: true,
+          type: "is-danger",
+          pauseOnHover: true,
+        });
+      }
     }
   }
 }

@@ -9,6 +9,10 @@ const list = {
     regex: /^[a-zA-Z0-9 ]*$/,
     message: 'Please input valid alphabet / number'
   },
+  username: {
+    regex: /^[a-zA-Z0-9\-_]*$/,
+    message: 'Your username can only contain letters and numbers'
+  },
   alpha: {
     regex: /^[a-zA-Z ]*$/,
     message: 'Please input valid alphabet'
