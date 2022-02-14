@@ -1,6 +1,6 @@
 <template>
   <div class="card large">
-    <div class="card-image">
+    <div class="card-image" @click="viewEvent">
       <figure class="image is-16by9">
         <img :src="value.eventImage" alt="Image">
       </figure>
@@ -82,6 +82,9 @@ export default {
     },
     readMore() {
       this.ellipsis = !this.ellipsis
+    },
+    viewEvent() {
+      this.$router.push({ name: 'event-detail', params: { id: this.value._id} })
     }
   }
 

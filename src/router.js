@@ -7,6 +7,7 @@ import ForgotPassword from './layout/Forgot-Password.vue'
 import NotFound from './layout/404.vue'
 import Home from './layout/Home.vue'
 import Events from './layout/Events.vue'
+import EventDetail from './layout/EventDetail.vue'
 import Account from './layout/Account.vue'
 import { token, noToken } from './util/routeGuard'
 
@@ -80,6 +81,16 @@ export default new Router({
       components: {
         // header: AppHeader,
        default: Account
+        // footer: AppFooter
+      }
+    },
+    {
+      path: "/event/:id",
+      name: "event-detail",
+      beforeEnter: token,
+      components: {
+        // header: AppHeader,
+       default: EventDetail
         // footer: AppFooter
       }
     },

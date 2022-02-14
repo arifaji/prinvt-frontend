@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import SingleImage from "../components/SingleImage";
 import BaseBody from "../components/BaseBody";
 import EventCards from "../components/EventCards";
+import BaseDate from "../components/BaseDate";
 
 export default {
   install(Vue) {
@@ -17,6 +18,7 @@ export default {
     Vue.component(SingleImage.name, SingleImage);
     Vue.component(BaseBody.name, BaseBody);
     Vue.component(EventCards.name, EventCards);
+    Vue.component(BaseDate.name, BaseDate);
     Vue.component()
   }
 };

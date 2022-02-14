@@ -30,17 +30,18 @@
         </div>
       </div>
       <div class="column is-12 mt-2">
-      <div class="card row columns is-multiline" style="width: inherit;">
-        <div v-for="(card, index) in events" v-bind:key="index" class="column is-4">
-          <event-cards :value="card" />
+        <div class="card row columns is-multiline" style="width: inherit;">
+          <div v-for="(card, index) in events" v-bind:key="index" class="column is-4">
+            <event-cards :value="card" />
+          </div>
         </div>
-      </div>
       </div>
     </base-body>
   </div>
 </template>
 <script>
 import _ from 'lodash';
+import moment from 'moment';
 export default {
   mounted() {
     this.getEvents()
@@ -64,6 +65,9 @@ export default {
     }
   },
   methods: {
+    titleDate(payload) {
+      return moment(payload).format('DD/MMM/YY hh:mm')
+    },
     async getEvents() {
       try {
         const events = await this.$helpers.httpGet('/api/events')
@@ -77,4 +81,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .column {
+    display: block;
+  }
 </style>
