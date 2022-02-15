@@ -41,3 +41,8 @@ export default {
   mixins: [inputMixin]
 };
 </script>
+<style lang="scss" scoped>
+  .textarea {
+    padding-top: 2px;
+  }
+</style>

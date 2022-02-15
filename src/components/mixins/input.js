@@ -197,7 +197,7 @@ const inputMixin = {
       }
 
       if (this.message.length === 0) {
-        this.d_type = "is-success"
+        // this.d_type = "is-success"
         return true
       } else {
         this.d_type = 'is-danger'
